@@ -13,14 +13,14 @@ def hashfile(path, blocksize = 65536):
     file.close()
     return hasher.hexdigest()
 
-a = hashfile("a.txt")
-b = hashfile("b.txt")
-#os.stat('a.txt')
-a_size = os.path.getsize('a.txt')
-b_size = os.path.getsize('b.txt')
-print(a,b)
-print(a_size,b_size)
-if((a == b) and (a_size == b_size)):
+hash_file1 = hashfile("a.txt")
+hash_file2 = hashfile("b.txt")
+#os.stat('a.txt') gets all info about given file
+file1_size = os.path.getsize('a.txt')
+file2_size = os.path.getsize('b.txt')
+print(hash_file1,hash_file2)
+print(file1_size,file2_size)
+if((hash_file1 == hash_file2) and (file1_size == file2_size)):
   print('duplicate')
 else:
   print('different')
