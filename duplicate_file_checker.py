@@ -3,7 +3,7 @@ import os
 file1 = open("a.txt",'rb')
 file2 = open("a.txt",'rb')
 
-def hashfile(path, blocksize = 65536):
+def hashfile(path, blocksize = 128):
     file = open(path, 'rb')
     hasher = hashlib.md5()
     buf = file.read(blocksize)
