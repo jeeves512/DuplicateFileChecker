@@ -32,6 +32,14 @@ def findDuplicates(parentFolder):
     return duplicates
 
 
+def mergeDictionaries(dictionary1,dictionary2):
+        for hashvalue in dictionary2.keys():
+            if hashvalue in dictionary1:
+                dictionary1[hashvalue] = dictionary1[hashvalue] + dictionary2[hashvalue]
+            else:
+                dictionary1[hashvalue] = dictionary2[hashvalue]
+
+
 def printResults(dict1):
     results = list(filter(lambda x: len(x) > 1, dict1.values()))
     if len(results) > 0:
@@ -45,5 +53,17 @@ def printResults(dict1):
     else:
         print('No duplicate files found.')
 
+dups = {}
+folders = 'C:\\Users\\Jeeves\\Desktop\\folder','C:\\Users\\Jeeves\\Desktop\\folder', 'C:\\Users\\Jeeves\\Desktop\\folder'
+if isinstance(folders,str) == False:
+    for i in folders:
+        # Iterate the folders given
+        if os.path.exists(i):
+            # Find the duplicated files and append them to the dups
+            mergeDictionaries(dups, findDuplicates(i))
+        else:
+            print('%s is not a valid path, please verify' % i)
+    printResults(dups)
+else:
+    printResults(findDuplicates(folders))
 
-print(printResults(findDuplicates('C:\\Users\\Jeeves\\Desktop\\folder')))
