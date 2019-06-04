@@ -1,26 +1,71 @@
 import hashlib
 import os
-file1 = open("a.txt",'rb')
-file2 = open("a.txt",'rb')
 
 def hashfile(path, blocksize = 128):
     file = open(path, 'rb')
-    hasher = hashlib.md5()
+    hash = hashlib.sha256()
     buf = file.read(blocksize)
     while len(buf) > 0:
-        hasher.update(buf)
+        hash.update(buf)
         buf = file.read(blocksize)
     file.close()
-    return hasher.hexdigest()
+    # returns string containing hexadecimal digits
+    return hash.hexdigest()  
 
-hash_file1 = hashfile("a.txt")
-hash_file2 = hashfile("b.txt")
-#os.stat('a.txt') gets all info about given file
-file1_size = os.path.getsize('a.txt')
-file2_size = os.path.getsize('b.txt')
-print(hash_file1,hash_file2)
-print(file1_size,file2_size)
-if((hash_file1 == hash_file2) and (file1_size == file2_size)):
-  print('duplicate')
+
+def findDuplicates(parentFolder):
+    # Dups in format {hash:[names]}
+    duplicates = {}
+    # stores file size and file hash
+    dupSize = {}  
+    for dirName, subdirs, fileList in os.walk(parentFolder):
+        print('Scanning %s...' % dirName)
+        for filename in fileList:
+            # Get the path to the file
+            path = os.path.join(dirName, filename)
+            # Calculate hash
+            file_hash = hashfile(path)
+            # Add or append the file path
+            if file_hash in duplicates and os.path.getsize(path) == dupSize[file_hash]:
+                duplicates[file_hash].append(path)
+            else:
+                duplicates[file_hash] = [path]
+                dupSize[file_hash] = os.path.getsize(path)
+    return duplicates
+
+
+def mergeDictionaries(dictionary1,dictionary2):
+        for hashvalue in dictionary2.keys():
+            if hashvalue in dictionary1:
+                dictionary1[hashvalue] = dictionary1[hashvalue] + dictionary2[hashvalue]
+            else:
+                dictionary1[hashvalue] = dictionary2[hashvalue]
+
+
+def printResults(dict1):
+    results = list(filter(lambda x: len(x) > 1, dict1.values()))
+    if len(results) > 0:
+        print('Duplicates Found:')
+        print('The following files are identical. The name could differ, but the content is identical')
+        print('___________________')
+        for result in results:
+            for subresult in result:
+                print('\t\t%s' % subresult)
+            print('___________________')
+    else:
+        print('No duplicate files found.')
+
+dups = {}
+folders = 'C:\\Users\\Jeeves\\Desktop\\folder','C:\\Users\\Jeeves\\Desktop\\folder', 'C:\\Users\\Jeeves\\Desktop\\folder'
+if isinstance(folders,str) == False:
+    for i in folders:
+        # Iterate the folders given
+        if os.path.exists(i):
+            # Find the duplicated files and append them to the dups
+            mergeDictionaries(dups, findDuplicates(i))
+        else:
+            print('%s is not a valid path, please verify' % i)
+    printResults(dups)
 else:
-  print('different')
+    printResults(findDuplicates(folders))
+
