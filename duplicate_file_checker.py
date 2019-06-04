@@ -9,13 +9,15 @@ def hashfile(path, blocksize = 128):
         hash.update(buf)
         buf = file.read(blocksize)
     file.close()
-    return hash.hexdigest()  # returns string containing hexadecimal digits
+    # returns string containing hexadecimal digits
+    return hash.hexdigest()  
 
 
 def findDuplicates(parentFolder):
     # Dups in format {hash:[names]}
     duplicates = {}
-    dupSize = {}  # stores file size and file hash
+    # stores file size and file hash
+    dupSize = {}  
     for dirName, subdirs, fileList in os.walk(parentFolder):
         print('Scanning %s...' % dirName)
         for filename in fileList:
