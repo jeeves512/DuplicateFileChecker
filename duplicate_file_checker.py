@@ -3,15 +3,14 @@ import os
 
 
 def hashfile(path, block_size=128):
-    file = open(path, 'rb')
-    hash = hashlib.sha256()
-    buf = file.read(block_size)
-    while len(buf) > 0:
-        hash.update(buf)
+    with open(path, 'rb') as file:
+        hash = hashlib.sha256()
         buf = file.read(block_size)
-    file.close()
-    # returns string containing hexadecimal digits
-    return hash.hexdigest()
+        while len(buf) > 0:
+            hash.update(buf)
+            buf = file.read(block_size)
+        # returns string containing hexadecimal digits
+        return hash.hexdigest()
 
 
 def find_duplicates(parent_folder):
@@ -71,3 +70,6 @@ if not isinstance(folders, str):
     print_results(dups)
 else:
     print_results(find_duplicates(folders))
+"""game theory inoves technolgy using HTML, JavaScipt, XML and other tools designed to aid your multimedia efforts
+online. Learn how to create dynamic content for website design that will have the opportunity to show off your newly 
+learned web development skills through the completion of a full website."""
