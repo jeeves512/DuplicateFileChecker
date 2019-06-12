@@ -70,6 +70,4 @@ if not isinstance(folders, str):
     print_results(dups)
 else:
     print_results(find_duplicates(folders))
-"""game theory inoves technolgy using HTML, JavaScipt, XML and other tools designed to aid your multimedia efforts
-online. Learn how to create dynamic content for website design that will have the opportunity to show off your newly 
-learned web development skills through the completion of a full website."""
+
