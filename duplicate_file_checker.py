@@ -1,24 +1,25 @@
 import hashlib
 import os
 
-def hashfile(path, blocksize = 128):
+
+def hashfile(path, block_size=128):
     file = open(path, 'rb')
     hash = hashlib.sha256()
-    buf = file.read(blocksize)
+    buf = file.read(block_size)
     while len(buf) > 0:
         hash.update(buf)
-        buf = file.read(blocksize)
+        buf = file.read(block_size)
     file.close()
     # returns string containing hexadecimal digits
-    return hash.hexdigest()  
+    return hash.hexdigest()
 
 
-def findDuplicates(parentFolder):
+def find_duplicates(parent_folder):
     # Dups in format {hash:[names]}
     duplicates = {}
     # stores file size and file hash
-    dupSize = {}  
-    for dirName, subdirs, fileList in os.walk(parentFolder):
+    dup_size = {}
+    for dirName, subdirs, fileList in os.walk(parent_folder):
         print('Scanning %s...' % dirName)
         for filename in fileList:
             # Get the path to the file
@@ -26,46 +27,47 @@ def findDuplicates(parentFolder):
             # Calculate hash
             file_hash = hashfile(path)
             # Add or append the file path
-            if file_hash in duplicates and os.path.getsize(path) == dupSize[file_hash]:
+            if file_hash in duplicates and os.path.getsize(path) == dup_size[file_hash]:
                 duplicates[file_hash].append(path)
             else:
                 duplicates[file_hash] = [path]
-                dupSize[file_hash] = os.path.getsize(path)
+                dup_size[file_hash] = os.path.getsize(path)
     return duplicates
 
 
-def mergeDictionaries(dictionary1,dictionary2):
-        for hashvalue in dictionary2.keys():
-            if hashvalue in dictionary1:
-                dictionary1[hashvalue] = dictionary1[hashvalue] + dictionary2[hashvalue]
-            else:
-                dictionary1[hashvalue] = dictionary2[hashvalue]
+def merge_dictionaries(dictionary1, dictionary2):
+    for hash_value in dictionary2.keys():
+        if hash_value in dictionary1:
+            dictionary1[hash_value] = dictionary1[hash_value] + dictionary2[hash_value]
+        else:
+            dictionary1[hash_value] = dictionary2[hash_value]
 
 
-def printResults(dict1):
+def print_results(dict1):
     results = list(filter(lambda x: len(x) > 1, dict1.values()))
     if len(results) > 0:
-        print('Duplicates Found:')
-        print('The following files are identical. The name could differ, but the content is identical')
-        print('___________________')
+        print('Duplicate Folders:')
+        print('________     '*10)
         for result in results:
             for subresult in result:
-                print('\t\t%s' % subresult)
-            print('___________________')
+                print(subresult)
+            print('________     '*10)
     else:
-        print('No duplicate files found.')
+        print('No duplicate files')
+
 
 dups = {}
-folders = 'C:\\Users\\Jeeves\\Desktop\\folder','C:\\Users\\Jeeves\\Desktop\\folder', 'C:\\Users\\Jeeves\\Desktop\\folder'
-if isinstance(folders,str) == False:
+folder_name_one = 'C:\\Users\\jeevan.james\\Desktop\\new test folder one'
+folder_name_two = 'C:\\Users\\jeevan.james\\Desktop\\new test folder two'
+folders = folder_name_one, folder_name_two
+if not isinstance(folders, str):
     for i in folders:
         # Iterate the folders given
         if os.path.exists(i):
             # Find the duplicated files and append them to the dups
-            mergeDictionaries(dups, findDuplicates(i))
+            merge_dictionaries(dups, find_duplicates(i))
         else:
-            print('%s is not a valid path, please verify' % i)
-    printResults(dups)
+            print(f'{i} is not a valid path, please verify')
+    print_results(dups)
 else:
-    printResults(findDuplicates(folders))
-
+    print_results(find_duplicates(folders))
